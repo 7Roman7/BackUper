@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     x:Class="BackUper.WMain"
-    Title="MainWindow" Height="350" Width="750" MinHeight="350" MinWidth="500" 
+    Title="BackUper"
+    Height="350" Width="750" MinHeight="350" MinWidth="500" 
     Icon="Images/Collection/drives_back.png"
     Loaded ="Window_Loaded"
     Closing="Window_Closing"
+    xmlns:local="clr-namespace:BackUper"
     >
     <!--Отображение в панеле задач-->
     <Window.TaskbarItemInfo>
@@ -51,17 +53,6 @@
                         <Image Source="Images/Collection/exit.png" Height="20"></Image>
                     </MenuItem.Icon>
                 </MenuItem>
-            </MenuItem>
-            <MenuItem>
-                <MenuItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Options" Margin="2" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </MenuItem.Header>
-                <MenuItem x:Name="miCloseAfterBackup" IsCheckable="True" ToolTip="Delete copy folder after create zip" Header="Close program after Backup"/>
-                <MenuItem x:Name="miDoZip" IsCheckable="True" Header="Do Zip" Click="miDoZip_Click"/>
-                <MenuItem x:Name="miDeleteAfterZip" IsCheckable="True" ToolTip="Delete copy folder after create zip" Header="Delete copy after build Zip" IsEnabled="False"/>
-
             </MenuItem>
             <MenuItem>
                 <MenuItem.Header>
@@ -118,7 +109,39 @@
                     </Button>
 
                 </ToolBarPanel>
+                <StackPanel Margin="10,10,10,10" DockPanel.Dock="Bottom">
+                    <Expander Header="Additional Settings">
+                        <StackPanel>
+                            <StackPanel x:Name="spReminder" Orientation="Horizontal" DockPanel.Dock="Top">
+                                <CheckBox x:Name="cbReimderIsCreated" Content="Use reminder every " ToolTip="Delete copy folder after create zip"
+                                          Click="cbReimderIsCreated_Click"
+                                          VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
+                                <TextBox Text="30" Width="30" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Right" IsEnabled="False"/>
+                                <TextBlock Text=" day(s). " Margin="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+
+                                <TextBlock Text=" Last BackUp" Margin="2" Padding="5,0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding settings.Options.LastBackup, Mode=OneWay}"
+                                           Margin="2" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                           />
+
+
+                            </StackPanel>
+
+                            <CheckBox x:Name="cbCloseAfterBackup" Content="Close program after Backup" ToolTip="Delete copy folder after create zip"
+                                      DockPanel.Dock="Top" 
+                                      IsChecked="{Binding settings.Options.CloseAfterBackup, Mode=TwoWay}"/>
+                            <CheckBox x:Name="cbDoZip" Content="Do Zip" ToolTip="Delete copy folder after create zip"
+                                      DockPanel.Dock="Top" 
+                                      Click="cbDoZip_Click" 
+                                      IsChecked="{Binding settings.Options.DoZip, Mode=TwoWay}"/>
+                            <CheckBox x:Name="cbDeleteAfterZip" Content="Delete copy after build Zip" ToolTip="Delete copy folder after create zip"
+                                      DockPanel.Dock="Top" 
+                                      IsEnabled="False"
+                                      IsChecked="{Binding settings.Options.DeleteAfterZip, Mode=TwoWay}"/>
+                        </StackPanel>
+                    </Expander>
+                </StackPanel>
                 <DataGrid x:Name="lvFileItems" SelectionChanged="lvFileItems_Selected" 
                           AutoGenerateColumns="False" 
                           CanUserAddRows="False" CanUserResizeRows="False" IsHitTestVisible="True" 

@@ -1,5 +1,5 @@
 ﻿using BackUper.Model;
-using BackUper.Utils;
+using BackUper.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,8 +19,6 @@ namespace BackUper
         /// </summary>
         public List<FileItem> lFiles;
 
-        //public WSettings wSettings;
-
         CommandBinding commandPlay = new CommandBinding(ApplicationCommands.Delete);
 
 
@@ -30,6 +28,7 @@ namespace BackUper
         public WMain()
         {
             InitializeComponent();
+            this.DataContext = this;
             LoadSettings();
         }
 
@@ -46,6 +45,8 @@ namespace BackUper
             //helpButton.CommandBindings.Add(commandBinding);
         }
 
+
+
         /// <summary>
         /// Закрытие окна
         /// </summary>
@@ -54,7 +55,6 @@ namespace BackUper
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             SaveSettings();
-            //wSettings.Close();
         }
         #region Команды
 
@@ -105,10 +105,10 @@ namespace BackUper
 
             lFiles = settings.lFiles;
             tbBackupDirectory.Text = settings.directoryForBackup;
-            miCloseAfterBackup.IsChecked = settings.options.CloseAfterBackup;
+            /*miCloseAfterBackup.IsChecked = settings.options.CloseAfterBackup;
             miDoZip.IsChecked = settings.options.DoZip;
             miDoZip_Click(null,null);
-            miDeleteAfterZip.IsChecked = settings.options.DeleteAfterZip;
+            miDeleteAfterZip.IsChecked = settings.options.DeleteAfterZip;*/
             SetSettings(settings);
 
             Refresh();
@@ -122,6 +122,8 @@ namespace BackUper
         private void SetSettings(Settings s)
         {
             settings.wsMain.SetValueToWindow(this);
+            cbReimderIsCreated.IsChecked = Reminder.IsCreated;
+
         }
 
         private void SaveSettings()
@@ -134,9 +136,9 @@ namespace BackUper
         {
             SaveOpen.settings.directoryForBackup = tbBackupDirectory.Text;
             SaveOpen.settings.lFiles = lFiles;
-            SaveOpen.settings.options.DoZip = miDoZip.IsChecked;
-            SaveOpen.settings.options.DeleteAfterZip = miDeleteAfterZip.IsEnabled && miDeleteAfterZip.IsChecked;
-            SaveOpen.settings.options.CloseAfterBackup = miCloseAfterBackup.IsChecked;
+            //SaveOpen.settings.options.DoZip = cbDoZip.IsEnabled;
+            //SaveOpen.settings.options.DeleteAfterZip = cbDeleteAfterZip.IsEnabled && cbDeleteAfterZip.IsChecked;
+            //SaveOpen.settings.options.CloseAfterBackup = cbCloseAfterBackup.IsEnabled;
             SaveOpen.settings.wsMain = new Settings.WindowSettings(this);
 
             return SaveOpen.settings;
@@ -144,9 +146,15 @@ namespace BackUper
 
         #endregion Настройки
 
-        private void miDoZip_Click(object sender, RoutedEventArgs e)
+        private void miAdditionalSettings_Click(object sender, RoutedEventArgs e)
         {
-            miDeleteAfterZip.IsEnabled = miDoZip.IsChecked;
+
+        }
+
+
+        private void cbDoZip_Click(object sender, RoutedEventArgs e)
+        {
+            cbDeleteAfterZip.IsEnabled = Convert.ToBoolean(cbDoZip.IsChecked);
         }
 
         /// <summary>
@@ -381,6 +389,20 @@ namespace BackUper
 
 
         #endregion Another methods
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Reminder.ChangeState();
+
+        }
+
+        private void cbReimderIsCreated_Click(object sender, RoutedEventArgs e)
+        {
+            Reminder.ChangeState();
+        }
+
+
+
 
 
 

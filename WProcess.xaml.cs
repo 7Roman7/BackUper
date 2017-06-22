@@ -1,5 +1,5 @@
 ﻿using BackUper.Model;
-using BackUper.Utils;
+using BackUper.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -180,7 +180,7 @@ namespace BackUper
                 spcbStates.Children.Add(cb);
             }
 
-            if (SaveOpen.settings.options.DoZip)
+            if (SaveOpen.settings.Options.DoZip)
             {
                 var cb = new CheckBox();
                 cb.IsChecked = false;
@@ -189,7 +189,7 @@ namespace BackUper
                 cb.IsEnabled = false;
                 spcbStates.Children.Add(cb);
             }
-            if (SaveOpen.settings.options.DoZip && SaveOpen.settings.options.DeleteAfterZip)
+            if (SaveOpen.settings.Options.DoZip && SaveOpen.settings.Options.DeleteAfterZip)
             {
                 var cb = new CheckBox();
                 cb.IsChecked = false;
@@ -288,14 +288,14 @@ namespace BackUper
                 i++;
             }
             //Архивирования
-            if (SaveOpen.settings.options.DoZip)
+            if (SaveOpen.settings.Options.DoZip)
             {
                 SetCheckBox(i, null);
                 ZipFile.CreateFromDirectory(tParams.mainFolder, tParams.mainFolder + ".zip");
                 SetCheckBox(i, true);
                 i++;
                 //Удаление не архивированной копии
-                if (SaveOpen.settings.options.DeleteAfterZip)
+                if (SaveOpen.settings.Options.DeleteAfterZip)
                 {
                     SetCheckBox(i, null);
                     Directory.Delete(tParams.mainFolder, true);
@@ -305,11 +305,12 @@ namespace BackUper
 
             }
             //Завершение
+            SaveOpen.settings.Options.LastBackup = DateTime.Now;//пометка о выполненнии Бэкапа
             this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(delegate()
                 {
                     State = 0;
                     //Закрытие программы
-                    if (SaveOpen.settings.options.CloseAfterBackup && lErrors.Count == 0)
+                    if (SaveOpen.settings.Options.CloseAfterBackup && lErrors.Count == 0)
                     {
                         this.Owner.Close();
                     }

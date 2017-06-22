@@ -46,6 +46,12 @@
     <Reference Include="DevExpress.Xpf.Docking.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpf.Layout.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpf.Printing.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>packages\TaskScheduler.2.5.27\lib\net40\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.TaskScheduler">
+      <HintPath>packages\TaskScheduler.2.5.27\lib\net40\Microsoft.Win32.TaskScheduler.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -74,9 +80,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\FileItemAddit.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\TParam.cs" />
+    <Compile Include="Utilities\Converters.cs" />
+    <Compile Include="Utilities\Reminder.cs" />
     <Compile Include="WAbout.xaml.cs">
       <DependentUpon>WAbout.xaml</DependentUpon>
     </Compile>
@@ -86,12 +93,9 @@
     <Compile Include="WSelectFileItem.xaml.cs">
       <DependentUpon>WSelectFileItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\SaveOpen.cs" />
+    <Compile Include="Utilities\SaveOpen.cs" />
     <Compile Include="WProcess.xaml.cs">
       <DependentUpon>WProcess.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WSettings.xaml.cs">
-      <DependentUpon>WSettings.xaml</DependentUpon>
     </Compile>
     <Page Include="Resources\Styles.xaml">
       <SubType>Designer</SubType>
@@ -125,10 +129,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\FileItem.cs" />
@@ -150,6 +150,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
