@@ -107,11 +107,8 @@ namespace BackUper.Model
         public class AdditionalSettings :  INotifyPropertyChanged
         {
             private bool doZip = false;
-            private bool deleteAfterZip = false;
             private bool closeAfterBackup = false;
             private DateTime lastBackup = DateTime.MinValue;
-
-
 
 
             public bool DoZip
@@ -123,15 +120,7 @@ namespace BackUper.Model
                     OnPropertyChanged("DoZip");
                 }
             }
-            public bool DeleteAfterZip
-            {
-                get { return deleteAfterZip; }
-                set
-                {
-                    deleteAfterZip = value;
-                    OnPropertyChanged("DeleteAfterZip");
-                }
-            }
+
             public bool CloseAfterBackup
             {
                 get { return closeAfterBackup; }

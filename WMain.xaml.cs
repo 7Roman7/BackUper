@@ -1,5 +1,6 @@
 ﻿using BackUper.Model;
 using BackUper.Utilities;
+using BackUper.View;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,16 @@ namespace BackUper
 
         CommandBinding commandPlay = new CommandBinding(ApplicationCommands.Delete);
 
+        /// <summary>
+        /// Хранилище настроек
+        /// </summary>
+        public Settings SettingsCurrent
+        {
+            get { return SaveOpen.settings; }
+            set { SaveOpen.settings = value; }
+        }
+
+
 
         /// <summary>
         /// Инициализация
@@ -28,8 +39,8 @@ namespace BackUper
         public WMain()
         {
             InitializeComponent();
-            this.DataContext = this;
-            LoadSettings();
+            DataContext = this;
+            
         }
 
         /// <summary>
@@ -39,13 +50,13 @@ namespace BackUper
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //SetSettings(SaveOpen.settings);
+            LoadSettings();
             // устанавливаем метод, который будет выполняться при вызове команды
             //commandBinding.Executed += ;
             // добавляем привязку к коллекции привязок элемента Button
             //helpButton.CommandBindings.Add(commandBinding);
         }
-
-
 
         /// <summary>
         /// Закрытие окна
@@ -65,25 +76,24 @@ namespace BackUper
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void miExit_Click(object sender, RoutedEventArgs e)
+        private void MIExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
         #region Настройки
 
-        public Settings settings { get { return SaveOpen.settings; } set { SaveOpen.settings = value; } }
 
         /// <summary>
         /// Загрузка настроек
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void bLoadSettings_Click(object sender, RoutedEventArgs e)
+        private void LoadSettings_Click(object sender, RoutedEventArgs e)
         {
             LoadSettings();
 
-            var wMessage = new WMessage("Settings was loaded", "Settings", 2500);
+            var wMessage = new WMessage("Settings was loaded", "Settings", 30);
             wMessage.ShowDialog();
         }
         /// <summary>
@@ -91,29 +101,32 @@ namespace BackUper
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void bSaveSettings_Click(object sender, RoutedEventArgs e)
+        private void SaveSettings_Click(object sender, RoutedEventArgs e)
         {
-            SaveSettings();
-
-            var wMessage = new WMessage("Settings was saved", "Settings", 2500);
-            wMessage.ShowDialog();
+            if (SaveSettings())
+            {
+                (new WMessage("Settings was saved", "Settings", 30)).ShowDialog();
+            }
+            else
+                (new WMessage("Settings was not saved", "Settings Error save", 30)).ShowDialog();
         }
 
+        /// <summary>
+        /// Загрузка настроек
+        /// </summary>
         private void LoadSettings()
         {
             var settings = SaveOpen.LoadSettings();
 
             lFiles = settings.lFiles;
             tbBackupDirectory.Text = settings.directoryForBackup;
-            /*miCloseAfterBackup.IsChecked = settings.options.CloseAfterBackup;
-            miDoZip.IsChecked = settings.options.DoZip;
-            miDoZip_Click(null,null);
-            miDeleteAfterZip.IsChecked = settings.options.DeleteAfterZip;*/
+            miDoZip.IsChecked = settings.Options.DoZip;
+            miCloseAfterBackup.IsChecked = settings.Options.CloseAfterBackup;
+
             SetSettings(settings);
 
             Refresh();
         }
-
 
         /// <summary>
         /// Применение настроек данной формы
@@ -121,24 +134,25 @@ namespace BackUper
         /// <param name="s"></param>
         private void SetSettings(Settings s)
         {
-            settings.wsMain.SetValueToWindow(this);
+            SettingsCurrent.wsMain.SetValueToWindow(this);
             cbReimderIsCreated.IsChecked = Reminder.IsCreated;
-
         }
 
-        private void SaveSettings()
+        /// <summary>
+        /// Сохранение настроек
+        /// </summary>
+        private bool SaveSettings()
         {
             FillSettings();
-            SaveOpen.SaveSettings();
+            return SaveOpen.SaveSettings();
         }
 
         public Settings FillSettings()
         {
             SaveOpen.settings.directoryForBackup = tbBackupDirectory.Text;
             SaveOpen.settings.lFiles = lFiles;
-            //SaveOpen.settings.options.DoZip = cbDoZip.IsEnabled;
-            //SaveOpen.settings.options.DeleteAfterZip = cbDeleteAfterZip.IsEnabled && cbDeleteAfterZip.IsChecked;
-            //SaveOpen.settings.options.CloseAfterBackup = cbCloseAfterBackup.IsEnabled;
+            SaveOpen.settings.Options.DoZip = miDoZip.IsChecked;
+            SaveOpen.settings.Options.CloseAfterBackup = miCloseAfterBackup.IsChecked;
             SaveOpen.settings.wsMain = new Settings.WindowSettings(this);
 
             return SaveOpen.settings;
@@ -149,12 +163,6 @@ namespace BackUper
         private void miAdditionalSettings_Click(object sender, RoutedEventArgs e)
         {
 
-        }
-
-
-        private void cbDoZip_Click(object sender, RoutedEventArgs e)
-        {
-            cbDeleteAfterZip.IsEnabled = Convert.ToBoolean(cbDoZip.IsChecked);
         }
 
         /// <summary>
@@ -200,7 +208,7 @@ namespace BackUper
                     lFiles.Add(f);
                 }
                 Refresh();
-                lvFileItems.SelectedIndex = lFiles.Count - 1;
+                dgFileItems.SelectedIndex = lFiles.Count - 1;
             }
         }
 
@@ -212,7 +220,7 @@ namespace BackUper
         private void bDelete_Click(object sender, RoutedEventArgs e)
         {
 
-            foreach(FileItem fi in lvFileItems.SelectedItems)
+            foreach(FileItem fi in dgFileItems.SelectedItems)
             {
                 lFiles.Remove(fi);
             }
@@ -223,23 +231,23 @@ namespace BackUper
 
         private void bMoveDown_Click(object sender, RoutedEventArgs e)
         {
-            int si = lvFileItems.SelectedIndex;
-            if (si >= 0 && si < lvFileItems.Items.Count - 1)
+            int si = dgFileItems.SelectedIndex;
+            if (si >= 0 && si < dgFileItems.Items.Count - 1)
             {
                 lFiles.Reverse(si, 2);
                 Refresh();
-                lvFileItems.SelectedIndex = si + 1;
+                dgFileItems.SelectedIndex = si + 1;
             }
         }
 
         private void bMoveUp_Click(object sender, RoutedEventArgs e)
         {
-            int si = lvFileItems.SelectedIndex;
-            if (si >= 0 + 1 && si < lvFileItems.Items.Count)
+            int si = dgFileItems.SelectedIndex;
+            if (si >= 0 + 1 && si < dgFileItems.Items.Count)
             {
                 lFiles.Reverse(si - 1, 2);
                 Refresh();
-                lvFileItems.SelectedIndex = si - 1;
+                dgFileItems.SelectedIndex = si - 1;
             }
         }
 
@@ -298,8 +306,8 @@ namespace BackUper
         /// </summary>
         private void Refresh()
         {
-            lvFileItems.ItemsSource = null;
-            lvFileItems.ItemsSource = lFiles;
+            dgFileItems.ItemsSource = null;
+            dgFileItems.ItemsSource = lFiles;
             /*
             lvFileItems.Items.Clear();
             
@@ -318,7 +326,7 @@ namespace BackUper
         /// <param name="e"></param>
         private void lvFileItems_Selected(object sender, SelectionChangedEventArgs e)
         {
-            if (lvFileItems.SelectedIndex >= 0 && lvFileItems.SelectedIndex < lvFileItems.Items.Count)
+            if (dgFileItems.SelectedIndex >= 0 && dgFileItems.SelectedIndex < dgFileItems.Items.Count)
             {
                 bDelete.IsEnabled = true;
             }
@@ -345,8 +353,8 @@ namespace BackUper
                     {
                         MessageBox.Show(String.Format("Обнаружен повторяющиеся адреса ({0}): {1}, {2}", lFiles[i].PathString, lFiles[i].Name, lFiles[j].Name),
                             "Конфликт адресов", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        lvFileItems.SelectedIndex = i;
-                        lvFileItems.Focus();
+                        dgFileItems.SelectedIndex = i;
+                        dgFileItems.Focus();
                         return false;
                     }
 
@@ -357,8 +365,8 @@ namespace BackUper
                             lFiles[j].PathString, lFiles[j].GetName(), 
                             lFiles[i].Name),
                             "Конфликт адресов", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        lvFileItems.SelectedIndex = i;
-                        lvFileItems.Focus();
+                        dgFileItems.SelectedIndex = i;
+                        dgFileItems.Focus();
                         return false;
                     }
 
@@ -379,10 +387,10 @@ namespace BackUper
             {
                 var wProcess = new WProcess();
                 wProcess.Owner = this;
-                settings.wsProcess.SetValueToWindow(wProcess);
+                SettingsCurrent.wsProcess.SetValueToWindow(wProcess);
                 wProcess.FolderForBackup = directoryForBackup;
                 wProcess.LFiles = lFiles;
-                if (startImmediately) wProcess.bStart_Click(null, null);
+                if (startImmediately) wProcess.Start_Click(null, null);
                 wProcess.ShowDialog();
             }
         }
@@ -401,21 +409,21 @@ namespace BackUper
             Reminder.ChangeState();
         }
 
+        private void MIGetSize_Click(object sender, RoutedEventArgs e)
+        {
+            FileItem item = (dgFileItems.SelectedItem as FileItem);
+            item.GetSize();
+        }
 
+        private void miGetFullSize_Click(object sender, RoutedEventArgs e)
+        {
+            long fullSize = 0;
+            foreach (var f in lFiles)
+            {
+                fullSize += f.GetSize();
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            MessageBox.Show(SaveOpen.SizeToString(fullSize, false), "Total size", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }

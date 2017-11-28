@@ -1,0 +1,33 @@
+﻿<Window x:Class="BackUper.View.WAbout"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About program" Height="300" Width="300"
+        WindowStyle="ToolWindow" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        >
+    <Grid Style="{StaticResource FieldStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <!--<Image Source="Images/Collection/drives_back.png" Height="32"/>-->
+        <Image Source="SplashScreen.png" Stretch="Fill" Grid.RowSpan="2"/>
+        <!--<Label Content="BackUper" Grid.Row="1" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" FontFamily="Segoe UI Black" />-->
+        <Label Content="Version: " Grid.Row="2" FontSize="10" VerticalAlignment="Center"/>
+        <Label x:Name="lVersion" Content="Version" Grid.Row="2" HorizontalAlignment="Center" FontStyle="Italic" />
+        <Label Content="Author: " Grid.Row="3" FontSize="10" VerticalAlignment="Center"/>
+        <Label Content="Strelkov Roman" Grid.Row="3" HorizontalAlignment="Center" FontStyle="Italic"/>
+
+        <DockPanel Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Label Content="Thanks" DockPanel.Dock="Top" FontSize="10" />
+            <TextBox VerticalAlignment="Stretch"  Text="http://iconizer.net/" Style="{StaticResource FieldStyle}"/>
+        </DockPanel>
+        <Button x:Name="bOK" ToolTip="OK" Grid.Row="5" Click="bOK_Click" IsDefault="True"
+                Style="{StaticResource ButtonStyle}">
+            <Image Source="/Images/Collection/accept.png" />
+        </Button>
+    </Grid>
+</Window>

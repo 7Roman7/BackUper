@@ -1,0 +1,67 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         x:Class="BackUper.View.WSelectFileItem"
+        Title="SelectFileItem" Height="400" Width="550"
+        MinHeight="250" MinWidth="350" Icon="/Images/find.png"
+    >
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="0,0,0,1">
+                <Button Click="LvlUpDrives_Click" ToolTip="Up to drive"
+                        Height="23" Width="30" DockPanel.Dock="Left" 
+                        Style="{StaticResource ButtonToolStyle}" >
+                    <Image Source="/Images/CollBlue/home_32.png"/>
+                </Button>
+                <Button Height="23" Width="30" Click="bLvlUp_Click" DockPanel.Dock="Left"
+                        Style="{StaticResource ButtonToolStyle}" ToolTip="Up">
+                    <Image Source="/Images/CollBlue/up_32.png"/>
+                </Button>
+                <CheckBox x:Name="cbAll" Content="All" DockPanel.Dock="Right" Width="50" VerticalAlignment="Center" Margin="15,0,0,0" Click="cbAll_Click"/>
+                <Button x:Name="bMoveTo" Click="MoveTo_Click" ToolTip="Move/Refresh"
+                        Height="23" Width="30" DockPanel.Dock="Right"
+                        Style="{StaticResource ButtonToolStyle}">
+                    <Image x:Name="iMoveTo" Source="/Images/CollBlue/right_32.png"/>
+                </Button>
+
+                <TextBox x:Name="tbCurrentPath" ToolTip="Current folder" TextChanged="CurrentPath_TextChanged"
+                         Margin="0,0,0,0" Height="23" HorizontalAlignment="Stretch" Text="Current folder"  DockPanel.Dock="Left"
+                         FontSize="14" FontStyle="Italic"
+                         Style="{StaticResource FieldStyle}"
+                         />
+                
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom" >
+                <TextBlock Height="23" Margin="12,0,0,0" Text="Выбрано: " DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="14" />
+
+                <Button ToolTip="OK" Click="Select_Click" IsDefault="True"
+                        Height="30" Width="30" Margin="5,5,5,5" DockPanel.Dock="Right" 
+                        Style="{StaticResource ButtonStyle}">
+                    <DockPanel >
+                        <Image Source="/Images/Collection/accept.png"/>
+                    </DockPanel>
+                </Button>
+                <TextBox x:Name="tbResultPath" ToolTip="Current path" Text="Nothing"
+                         Height="24"  IsReadOnly="True" FontSize="14"
+                         Style="{StaticResource FieldStyle}" />
+            </DockPanel>
+
+            <ListBox  x:Name="lbFileItems" SelectionChanged="SelectCurrent" MouseDoubleClick="MouseDoubleClickOnListBox" SelectionMode="Extended"
+                      Style="{StaticResource FieldStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding Image}" Width="16" Height="16" HorizontalAlignment="Left" ToolTip="{Binding TypeName}"/>
+                            <TextBlock Text="{Binding Name}" Margin="20,0,0,0"  HorizontalAlignment="Left"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+    </Grid>
+</Window>

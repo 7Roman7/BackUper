@@ -73,26 +73,27 @@
     </ApplicationDefinition>
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\TParam.cs" />
+    <Compile Include="Model\BaseObject.cs" />
     <Compile Include="Utilities\Converters.cs" />
     <Compile Include="Utilities\Reminder.cs" />
-    <Compile Include="WAbout.xaml.cs">
+    <Compile Include="View\WAbout.xaml.cs">
       <DependentUpon>WAbout.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WMessage.xaml.cs">
+    <Compile Include="View\WMessage.xaml.cs">
       <DependentUpon>WMessage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WSelectFileItem.xaml.cs">
+    <Compile Include="View\WSelectFileItem.xaml.cs">
       <DependentUpon>WSelectFileItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\SaveOpen.cs" />
-    <Compile Include="WProcess.xaml.cs">
+    <Compile Include="View\WProcess.xaml.cs">
       <DependentUpon>WProcess.xaml</DependentUpon>
     </Compile>
     <Page Include="Resources\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WAbout.xaml">
+    <Page Include="View\WAbout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -108,15 +109,15 @@
       <DependentUpon>WMain.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="WMessage.xaml">
+    <Page Include="View\WMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WSelectFileItem.xaml">
+    <Page Include="View\WSelectFileItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WProcess.xaml">
+    <Page Include="View\WProcess.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -163,7 +164,7 @@
     <Resource Include="Images\Collection\up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Collection\start.png" />
+    <Resource Include="Images\Collection\play.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Collection\drives_gray.png" />
@@ -198,11 +199,11 @@
     <Resource Include="Images\Drives\drive_green_down.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Item\file.png" />
-    <Resource Include="Images\Item\folder.png" />
+    <Resource Include="Images\Item\file_32.png" />
+    <Resource Include="Images\Item\folder_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Item\drive.png" />
+    <Resource Include="Images\Item\drive_32.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="drives_Back.ico" />
@@ -217,13 +218,41 @@
     <Resource Include="Images\Collection\right.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Item\unknown.png" />
+    <Resource Include="Images\Item\unknown_32.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Collection\exit.png" />
   </ItemGroup>
   <ItemGroup>
     <SplashScreen Include="SplashScreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Item\disc_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CollBlue\files_to_archive_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CollBlue\home_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CollBlue\refresh_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CollBlue\right_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CollBlue\up_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Collection\misc_01_32.png" />
+    <Resource Include="Images\Collection\misc_01_a_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CollGray\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Drives\drive_clear.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

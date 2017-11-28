@@ -1,21 +1,19 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     x:Class="BackUper.WMain"
     Title="BackUper"
     Height="350" Width="750" MinHeight="350" MinWidth="500" 
-    Icon="Images/Collection/drives_back.png"
+    Icon="/Images/Collection/drives_back.png"
     Loaded ="Window_Loaded"
     Closing="Window_Closing"
-    xmlns:local="clr-namespace:BackUper"
     >
     <!--Отображение в панеле задач-->
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo>
             <TaskbarItemInfo.ThumbButtonInfos>
-                <ThumbButtonInfo ImageSource="Images/Collection/stop.png"/>
-                <ThumbButtonInfo ImageSource="Images/Collection/start.png"/>
+                <ThumbButtonInfo ImageSource="/Images/Collection/stop.png"/>
+                <ThumbButtonInfo ImageSource="/Images/Collection/play.png"/>
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>
     </Window.TaskbarItemInfo>
@@ -36,38 +34,60 @@
 
     <DockPanel LastChildFill="True">
         <Menu Height="24" VerticalAlignment="Top" DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Load Settings" Click="bLoadSettings_Click">
+            <MenuItem>
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/Drives/drive_clear.png" Height="20"></Image>
+                        <TextBlock Text="File" Margin="2" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </MenuItem.Header>
+                <MenuItem Header="Load Settings" Click="LoadSettings_Click">
                     <MenuItem.Icon>
-                        <Image Source="Images/settings.png" Height="20"></Image>
+                        <Image Source="/Images/settings.png" Height="20"></Image>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save Settings" Click="bSaveSettings_Click">
+                <MenuItem Header="Save Settings" Click="SaveSettings_Click">
                     <MenuItem.Icon>
-                        <Image Source="Images/settings.png" Height="20"></Image>
+                        <Image Source="/Images/settings.png" Height="20"></Image>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem x:Name="miExit" Header="Exit" Click="miExit_Click">
+                <MenuItem x:Name="miDoZip" Header="Do Zip" 
+                          ToolTip="Для использования необходим запас места. Процесс затратит чуть больше времени. Копия, что будет создана в промежутке будет удалена."
+                          IsChecked="{Binding settings.Options.DoZip, Mode=TwoWay}" IsCheckable="True"
+                          >
+                </MenuItem>
+                <MenuItem x:Name="miCloseAfterBackup" Header="CloseAfterBackup"
+                          IsChecked="{Binding settings.Options.CloseAfterBackup, Mode=TwoWay}" IsCheckable="True"
+                          >
+                </MenuItem>
+                <Separator />
+                <MenuItem x:Name="miExit" Header="Exit" Click="MIExit_Click">
                     <MenuItem.Icon>
-                        <Image Source="Images/Collection/exit.png" Height="20"></Image>
+                        <Image Source="/Images/Collection/exit.png" Height="20"></Image>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <MenuItem>
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/info.png" Height="20"></Image>
                         <TextBlock Text="Info" Margin="2" VerticalAlignment="Center"/>
                     </StackPanel>
                 </MenuItem.Header>
                 <MenuItem x:Name="miInfo" Header="Info" Click="miInfo_Click">
                     <MenuItem.Icon>
-                        <Image Source="Images/info.png" Height="20"></Image>
+                        <Image Source="/Images/info.png" Height="20"></Image>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="miAbout" Header="About Program" Click="miAbout_Click">
                     <MenuItem.Icon>
-                        <Image Source="Images/info.png" Height="20"></Image>
+                        <Image Source="/Images/info.png" Height="20"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="miGetFullSize" Header="Get full size" Click="miGetFullSize_Click">
+                    <MenuItem.Icon>
+                        <Image Source="/Images/info.png" Height="20"></Image>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -87,25 +107,25 @@
                 <ToolBarPanel Width="30" DockPanel.Dock="Right">
                     <Button x:Name="bAdd" Height="30" ToolTip="Add" Click="bAdd_Click" 
                             Style="{StaticResource ButtonToolStyle}">
-                        <Image Source="Images/Collection/add.png" />
+                        <Image Source="/Images/Collection/add.png" />
                     </Button>
                     <Button x:Name="bDelete" Height="30" ToolTip="Delete" Click="bDelete_Click" 
                             Style="{StaticResource ButtonToolStyle}" IsEnabled="False">
-                        <Image Source="Images/Collection/delete.png" />
+                        <Image Source="/Images/Collection/delete.png" />
                     </Button>
                     <Separator Height="20" Style="{StaticResource FieldStyle}"/>
                     <Button x:Name="bMoveUp"  ToolTip="Move Up" Click="bMoveUp_Click" Height="30"
                             Style="{StaticResource ButtonToolStyle}">
-                        <Image Source="Images/Collection/up.png" />
+                        <Image Source="/Images/Collection/up.png" />
                     </Button>
                     <Button x:Name="bMoveDown"  ToolTip="Move Down" Click="bMoveDown_Click" Height="30"
                             Style="{StaticResource ButtonToolStyle}">
-                        <Image Source="Images/Collection/down.png" />
+                        <Image Source="/Images/Collection/down.png" />
                     </Button>
                     <Separator Height="20" Style="{StaticResource FieldStyle}"/>
                     <Button x:Name="bStartBackup" ToolTip="Start Backup" Click="bStartBackup_Click"  Height="30"
                             Style="{StaticResource ButtonToolStyle}">
-                        <Image Source="Images/Collection/start.png" />
+                        <Image Source="/Images/Collection/play.png" />
                     </Button>
 
                 </ToolBarPanel>
@@ -124,32 +144,17 @@
                                 <TextBlock Text="{Binding settings.Options.LastBackup, Mode=OneWay}"
                                            Margin="2" VerticalAlignment="Center" HorizontalAlignment="Right"
                                            />
-
-
                             </StackPanel>
-
-                            <CheckBox x:Name="cbCloseAfterBackup" Content="Close program after Backup" ToolTip="Delete copy folder after create zip"
-                                      DockPanel.Dock="Top" 
-                                      IsChecked="{Binding settings.Options.CloseAfterBackup, Mode=TwoWay}"/>
-                            <CheckBox x:Name="cbDoZip" Content="Do Zip" ToolTip="Delete copy folder after create zip"
-                                      DockPanel.Dock="Top" 
-                                      Click="cbDoZip_Click" 
-                                      IsChecked="{Binding settings.Options.DoZip, Mode=TwoWay}"/>
-                            <CheckBox x:Name="cbDeleteAfterZip" Content="Delete copy after build Zip" ToolTip="Delete copy folder after create zip"
-                                      DockPanel.Dock="Top" 
-                                      IsEnabled="False"
-                                      IsChecked="{Binding settings.Options.DeleteAfterZip, Mode=TwoWay}"/>
                         </StackPanel>
                     </Expander>
                 </StackPanel>
-                <DataGrid x:Name="lvFileItems" SelectionChanged="lvFileItems_Selected" 
+                <DataGrid x:Name="dgFileItems" SelectionChanged="lvFileItems_Selected" 
                           AutoGenerateColumns="False" 
                           CanUserAddRows="False" CanUserResizeRows="False" IsHitTestVisible="True" 
                           Background="Transparent" HorizontalGridLinesBrush="DarkGray" RowBackground="#6628E16E" AlternatingRowBackground="Transparent"
                           ItemsSource="{Binding Source=lFiles}"
                           Style="{StaticResource FieldStyle}" AlternationCount="2"
                           >
-
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="" Width="16" IsReadOnly="True" CanUserResize="False">
                             <DataGridTemplateColumn.CellTemplate>
@@ -160,10 +165,14 @@
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Name" Width="120" Binding="{Binding Path=Name, Mode=TwoWay}" />
                         <DataGridTextColumn Header="Path" Width="*" Binding="{Binding Path=PathString, Mode=OneWay}"/>
+                        <DataGridTextColumn Header="Size" Width="50" Binding="{Binding Path=SizeStr, Mode=OneWay}"/>
                         <DataGridCheckBoxColumn Header="Exist" Width="40" MaxWidth="40" IsReadOnly="True" Binding="{Binding Path=Exist, Mode=OneWay}" />
-
                     </DataGrid.Columns>
-
+                    <DataGrid.ContextMenu>
+                        <ContextMenu >
+                            <MenuItem x:Name="miGetSize" Header="Get Size" Click="MIGetSize_Click"  />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
 
 
@@ -176,7 +185,7 @@
                     HorizontalAlignment="Right" Height="32" Margin="30,0,1,0"  VerticalAlignment="Center" Width="50" DockPanel.Dock="Right"
                     Style="{StaticResource ButtonStyle}">
                     <DockPanel LastChildFill="True">
-                        <Image Source="Images/Drives/drive_green_down.png" DockPanel.Dock="Left"/>
+                        <Image Source="/Images/CollBlue/files_to_archive_32.png" DockPanel.Dock="Left"/>
                         <!--<Label Content="Do backup" HorizontalContentAlignment="Center"/>-->
                     </DockPanel>
                 </Button>
@@ -185,7 +194,7 @@
                         Style="{StaticResource ButtonStyle}"
                         >
                     <DockPanel LastChildFill="True">
-                        <Image Source="Images/find.png" DockPanel.Dock="Left"/>
+                        <Image Source="/Images/find.png" DockPanel.Dock="Left"/>
                         <Label Content="Select" HorizontalContentAlignment="Center"/>
                     </DockPanel>
                 </Button>

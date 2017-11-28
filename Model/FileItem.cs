@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackUper.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -6,20 +7,31 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BackUper.Model
 {
     [Serializable]
-    public class FileItem : IDataErrorInfo, INotifyPropertyChanged
+    public class FileItem : BaseObject, IDataErrorInfo
     {
-        #region Поля
+        #region Типы объекта
+        public enum KindItem : byte
+        {
+            unknown,
+            file,
+            folder,
+            hardDrive,
+            CDRom
+        }
+        #endregion Типы объекта
+
+        #region Переменные хранилище
         private string name = "";
-        private string pathString = String.Empty;
+        private string pathString = String.Empty;        //хранилище пути
         private bool exist = false;
-        private byte kind = 0;
-        #endregion Поля
-
-
+        private KindItem kind = 0;
+        private long size = -1;
+        #endregion Переменные хранилище
 
 
 
@@ -44,31 +56,34 @@ namespace BackUper.Model
             get { return pathString; }
             set { pathString = value; Analysis(); OnPropertyChanged("Name"); }
         }
-        //хранилище пути
 
         /// <summary>
         /// Существование файла
         /// </summary>
-        public bool Exist{get {return exist;}}
+        public bool Exist {get {return exist;}}
 
         /// <summary>
         /// Является файлом. true - файл,
         /// </summary>
-        public bool IsFile { get { return kind == 1 ? true : false; } }
+        public bool IsFile { get { return kind == KindItem.file ? true : false; } }
         /// <summary>
-        /// Является папкой. true - файл,
+        /// Является папкой. true - папка,
         /// </summary>
-        public bool IsFolder { get { return kind == 2 ? true : false; } }
+        public bool IsFolder { get { return kind == KindItem.folder ? true : false; } }
         /// <summary>
-        /// Является папкой. true - файл,
+        /// Является жестким диском. true - ЖДиск,
         /// </summary>
-        public bool IsDrive { get { return kind == 3 ? true : false; } }
+        public bool IsDrive { get { return kind == KindItem.hardDrive ? true : false; } }
+
+        /// <summary>
+        /// Является диском. true - Диск,
+        /// </summary>
+        public bool IsDisk { get { return kind == KindItem.CDRom ? true : false; } }
 
         /// <summary>
         /// Тип объъекта: 0-? 1-файл, 2-директория, 3-диск, 
         /// </summary>
-        public byte Kind { get { return kind; } }
-
+        public KindItem Kind { get { return kind; } }
 
         /// <summary>
         /// Text name Kind
@@ -79,9 +94,10 @@ namespace BackUper.Model
             {
                 switch (kind)
                 {
-                    case 1: return "File";
-                    case 2: return "Folder";
-                    case 3: return "Drive";
+                    case KindItem.file: return "File";
+                    case KindItem.folder: return "Folder";
+                    case KindItem.hardDrive: return "Drive";
+                    case KindItem.CDRom: return "CDRom";
 
                     default: return "Unknown";
                 }
@@ -94,13 +110,38 @@ namespace BackUper.Model
         public string Image { get {
             switch (kind)
             {
-                case 1: return "Images/Item/file.png";
-                case 2: return "Images/Item/folder.png";
-                case 3: return "Images/Item/drive.png";
+                case KindItem.file: return "/Images/Item/file_32.png";
+                case KindItem.folder: return "/Images/Item/folder_32.png";
+                case KindItem.hardDrive: return "/Images/Item/drive_32.png";
+                case KindItem.CDRom: return "/Images/Item/disc_32.png";
 
-                default: return "Images/Item/unknown.png";
+                default: return "/Images/Item/unknown_32.png";
             }     
         } }
+
+        [XmlIgnoreAttribute]
+        public long Size
+        {
+            get { return size; }
+            set
+            {
+                size = value;
+                OnPropertyChanged("Size");
+                OnPropertyChanged("SizeStr");
+            }
+        }
+
+        public string SizeStr
+        {
+            get
+            {
+                if (size == -1)
+                    return "?";
+                else 
+                return SaveOpen.SizeToString(size, false);
+            }
+
+        }
 
         /// <summary>
         /// Конструктор по умолчанию
@@ -135,6 +176,15 @@ namespace BackUper.Model
             }
         }
 
+        /// <summary>
+        /// Самоопределение размера
+        /// </summary>
+        /// <returns></returns>
+        public long GetSize()
+        {
+            Size = SaveOpen.GetSize(PathString);
+            return Size;
+        }
 
         public override string ToString()
         {
@@ -145,22 +195,29 @@ namespace BackUper.Model
         /// Определение типа
         /// </summary>
         /// <returns></returns>
-        public byte DetectType()
+        public KindItem DetectType()
         {
             kind = 0;//not exist
-
             //File
             if (System.IO.File.Exists(PathString))
-                kind = 1;
-            else
-                if (System.IO.Directory.Exists(PathString))
+                kind = KindItem.file;
+            else if (System.IO.Directory.Exists(PathString))
+            {
+                if (Path.GetPathRoot(PathString) != PathString)
+                    kind = KindItem.folder;//folder
+                else
                 {
-                
-                    if (Path.GetPathRoot(PathString) != PathString)
-                        kind = 2;//folder
-                    else
-                        kind = 3;//Drive
-                } 
+                    DriveInfo d = new DriveInfo(PathString);
+                    if (d.DriveType == DriveType.Fixed)
+                        kind = KindItem.hardDrive;//HardDrive
+                }
+            }
+            else
+            {//Drives
+                DriveInfo d = new DriveInfo(PathString);
+                if (d.DriveType == DriveType.CDRom)
+                    kind = KindItem.CDRom;//HardDrive
+            }
 
             return kind;
         }
@@ -197,13 +254,6 @@ namespace BackUper.Model
 
         #endregion
 
-        #region Члены INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
+
     }
 }

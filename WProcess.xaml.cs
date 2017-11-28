@@ -19,7 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.IO.Compression;
-
+using BackUper.View;
 
 namespace BackUper
 {
@@ -129,7 +129,7 @@ namespace BackUper
             if (thread != null)
                 thread.Abort();
 
-            (Owner as WMain).settings.wsProcess.LoadValueFromWindow(this);
+            (Owner as WMain).SettingsCurrent.wsProcess.LoadValueFromWindow(this);
         }
 
         /// <summary>
